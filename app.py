@@ -89,6 +89,7 @@ def prepare_image(image, target_size):
     return image
 
 def get_model():
+    return tf.keras.models.load_model('model/my_model2.h5')
     if 'model' not in g:
         g.model = tf.keras.models.load_model('model/my_model_44.h5')
         # optimizer = Adam(learning_rate=0.01)
@@ -117,10 +118,10 @@ def upload_files():
         model = get_model()
         print("get model success?")
         # g.model.compile(optimizer=tf.keras.optimizers.adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
-        # predictions = model.predict(prepared_image)
-        # predicted_class = np.argmax(predictions, axis=1)[0]
-        # probabilities = predictions[0]
-        return render_template('result.html', label=0, probabilities=0, image_url=filepath)
+        predictions = model.predict(prepared_image)
+        predicted_class = np.argmax(predictions, axis=1)[0]
+        probabilities = predictions[0]
+        return render_template('result.html', label=predicted_class, probabilities=probabilities, image_url=filepath)
     except Exception as e:
         print(f"Error: {e}")
         return str(e), 500
